@@ -20,3 +20,17 @@ export const getEventById = async (id) => {
   const [event] = await getData(`http://localhost:5000/events?id=${id}`);
   return event;
 };
+
+export async function getFilteredEvents(dateFilter) {
+  const { year, month } = dateFilter;
+  const allEvents = await getAllEvents();
+
+  let filteredEvents = allEvents.filter((event) => {
+    const eventDate = new Date(event.date);
+    return (
+      eventDate.getFullYear() === year && eventDate.getMonth() === month - 1
+    );
+  });
+
+  return filteredEvents;
+}
