@@ -3,10 +3,7 @@ import { getFeaturedEvents } from '../helpers/api-utils';
 import EventList from '../components/events/event-list';
 
 function HomePage(props) {
-  const [featuredEvents, setFeaturedEvents] = useState(props.featuredEvents);
-  useEffect(() => {
-    getFeaturedEvents().then((events) => setFeaturedEvents(events));
-  }, []);
+  const { featuredEvents } = props;
 
   return (
     <div>
@@ -22,6 +19,7 @@ export const getStaticProps = async () => {
     props: {
       featuredEvents,
     },
+    revalidate: 1000,
   };
 };
 
