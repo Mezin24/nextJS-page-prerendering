@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
@@ -24,6 +25,10 @@ function EventDetailPage(props) {
 
   return (
     <>
+      <Head>
+        <title>{event.title}</title>
+        <meta name='description' content={event.description} />
+      </Head>
       <EventSummary title={event.title} />
       <EventLogistics
         date={event.date}
@@ -43,7 +48,6 @@ export const getStaticProps = async (ctx) => {
     params: { eventId },
   } = ctx;
   const event = await getEventById(eventId);
-  console.log(event);
 
   return {
     props: {

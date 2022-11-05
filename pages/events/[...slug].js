@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import { Fragment } from 'react';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
@@ -28,6 +29,13 @@ function FilteredEventsPage() {
     setEvents(data);
   }, [data]);
 
+  let pageHeadData = (
+    <Head>
+      <title>Filtered Events</title>
+      <meta name='description' content={`Filtered Events`} />
+    </Head>
+  );
+
   if (
     isNaN(numYear) ||
     isNaN(numMonth) ||
@@ -39,6 +47,7 @@ function FilteredEventsPage() {
   ) {
     return (
       <Fragment>
+        {pageHeadData}
         <ErrorAlert>
           <p>Invalid filter. Please adjust your values!</p>
         </ErrorAlert>
@@ -60,9 +69,20 @@ function FilteredEventsPage() {
     );
   });
 
+  pageHeadData = (
+    <Head>
+      <title>Filtered Events</title>
+      <meta
+        name='description'
+        content={`Filtered Events from ${year}/${month}`}
+      />
+    </Head>
+  );
+
   if (!filteredEvents || filteredEvents.length === 0) {
     return (
       <Fragment>
+        {pageHeadData}
         <ErrorAlert>
           <p>No events found for the chosen filter!</p>
         </ErrorAlert>
@@ -77,6 +97,7 @@ function FilteredEventsPage() {
 
   return (
     <Fragment>
+      {pageHeadData}
       <ResultsTitle date={date} />
       <EventList items={filteredEvents} />
     </Fragment>
