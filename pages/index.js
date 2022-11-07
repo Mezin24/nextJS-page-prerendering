@@ -1,7 +1,8 @@
 import Head from 'next/head';
-import { useEffect, useState } from 'react';
+
 import { getFeaturedEvents } from '../helpers/api-utils';
 import EventList from '../components/events/event-list';
+import NewsletterRegistration from '../components/input/newsletter-registration';
 
 function HomePage(props) {
   const { featuredEvents } = props;
@@ -12,6 +13,7 @@ function HomePage(props) {
         <title>NextJS Events</title>
         <meta name='description' content='Find most exiting events for you' />
       </Head>
+      <NewsletterRegistration />
       <EventList items={featuredEvents} />
     </div>
   );
