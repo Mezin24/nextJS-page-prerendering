@@ -14,7 +14,19 @@ function Comments(props) {
   }
 
   function addCommentHandler(commentData) {
-    // send data to API
+    const newComment = {
+      id: new Date().toISOString(),
+      ...commentData,
+    };
+    fetch('/api/comments', {
+      method: 'POST',
+      body: JSON.stringify(newComment),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => console.log(data));
   }
 
   return (
