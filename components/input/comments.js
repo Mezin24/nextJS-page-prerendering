@@ -6,6 +6,7 @@ import classes from './comments.module.css';
 
 function Comments(props) {
   const { eventId } = props;
+  console.log(eventId);
 
   const [showComments, setShowComments] = useState(false);
 
@@ -18,7 +19,8 @@ function Comments(props) {
       id: new Date().toISOString(),
       ...commentData,
     };
-    fetch('/api/comments', {
+    console.log(newComment);
+    fetch(`/api/comments/${props.eventId}`, {
       method: 'POST',
       body: JSON.stringify(newComment),
       headers: {
@@ -35,7 +37,7 @@ function Comments(props) {
         {showComments ? 'Hide' : 'Show'} Comments
       </button>
       {showComments && <NewComment onAddComment={addCommentHandler} />}
-      {showComments && <CommentList />}
+      {showComments && <CommentList eventId={eventId} />}
     </section>
   );
 }

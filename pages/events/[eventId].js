@@ -1,12 +1,6 @@
 import Head from 'next/head';
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
 
-import {
-  getEventById,
-  getAllEvents,
-  getFeaturedEvents,
-} from '../../helpers/api-utils';
+import { getEventById, getFeaturedEvents } from '../../helpers/api-utils';
 import EventSummary from '../../components/event-detail/event-summary';
 import EventLogistics from '../../components/event-detail/event-logistics';
 import EventContent from '../../components/event-detail/event-content';
