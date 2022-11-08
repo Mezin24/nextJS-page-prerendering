@@ -1,22 +1,6 @@
-import { useState, useEffect } from 'react';
 import classes from './comment-list.module.css';
 
-function CommentList({ eventId }) {
-  const [comments, setComments] = useState(null);
-
-  const fetchComments = async () => {
-    const res = await fetch(`/api/comments/${eventId}`);
-    const data = await res.json();
-    const { comments } = data;
-    return comments;
-  };
-
-  useEffect(() => {
-    fetchComments().then((comments) => {
-      setComments(comments);
-    });
-  }, []);
-
+function CommentList({ comments }) {
   if (!comments) {
     return <h3 className='center'>Loading...</h3>;
   }
