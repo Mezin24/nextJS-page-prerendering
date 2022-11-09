@@ -1,8 +1,11 @@
 import { useRef } from 'react';
+import { useNotifocationContext } from '../../store/notification-context';
 import classes from './newsletter-registration.module.css';
 
 function NewsletterRegistration() {
   const emailRef = useRef();
+  const notificationCtx = useNotifocationContext();
+  const { showNotification } = notificationCtx;
 
   const registrationHandler = (event) => {
     event.preventDefault();
@@ -11,6 +14,11 @@ function NewsletterRegistration() {
       alert('Please enter valid email');
       return;
     }
+    showNotification({
+      status: 'pending',
+      title: 'Loading',
+      message: 'Subsribing...',
+    });
     fetch('/api/email', {
       method: 'POST',
       body: JSON.stringify({ email: enteredEmail }),
@@ -18,12 +26,28 @@ function NewsletterRegistration() {
         'Content-Type': 'application/json',
       },
     })
-      .then((res) => res.json())
-      .then((data) => console.log(data));
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          throw new Error(res.message || 'Something went wrong...');
+        }
+      })
+      .then(() => {
+        showNotification({
+          status: 'success',
+          title: 'Success',
+          message: 'You are successfully subscibed',
+        });
+      })
+      .catch((err) => {
+        showNotification({
+          status: 'error',
+          title: 'Error',
+          message: err.message || 'Something went wrong...',
+        });
+      });
     emailRef.current.value = '';
-    // fetch user input (state or refs)
-    // optional: validate input
-    // send valid data to API
   };
 
   return (

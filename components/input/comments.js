@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNotifocationContext } from '../../store/notification-context';
 
 import CommentList from './comment-list';
 import NewComment from './new-comment';
@@ -6,22 +7,29 @@ import classes from './comments.module.css';
 
 function Comments(props) {
   const { eventId } = props;
-  console.log(eventId);
-
+  const notificationCtx = useNotifocationContext();
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState(null);
+  const { showNotification, hideNotification } = notificationCtx;
 
   const fetchComments = async () => {
-    const res = await fetch(`/api/comments/${eventId}`);
-    const data = await res.json();
-    const { comments } = data;
-    return comments;
+    try {
+      const res = await fetch(`/api/comments/${eventId}`);
+
+      const data = await res.json();
+      const { comments } = data;
+      return comments;
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
-    fetchComments().then((comments) => {
-      setComments(comments);
-    });
+    if (showComments) {
+      fetchComments().then((comments) => {
+        setComments(comments);
+      });
+    }
   }, [showComments]);
 
   function toggleCommentsHandler() {
@@ -33,6 +41,11 @@ function Comments(props) {
       id: new Date().toISOString(),
       ...commentData,
     };
+    showNotification({
+      status: 'pending',
+      title: 'Loading',
+      message: 'Posting new comment...',
+    });
 
     fetch(`/api/comments/${props.eventId}`, {
       method: 'POST',
@@ -41,10 +54,27 @@ function Comments(props) {
         'Content-Type': 'application/json',
       },
     })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(res.message || 'Something went wrong...');
+        }
+
+        showNotification({
+          status: 'success',
+          title: 'Success',
+          message: 'You post successfully published',
+        });
+        return res.json();
+      })
+      .then(() => {
         setComments((prev) => [newComment, ...prev]);
+      })
+      .catch((err) => {
+        showNotification({
+          status: 'error',
+          title: 'Error',
+          message: err.message || 'Something went wrong...',
+        });
       });
   }
 
